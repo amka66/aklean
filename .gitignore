@@ -1,0 +1,8 @@
+# Virtual environments
+/.lake
+
+# Macos-generated files
+.DS_Store
+
+# Temporary files
+tmp/

@@ -1,0 +1,64 @@
+{
+    "workbench.colorTheme": "Default High Contrast",
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#0094a7",
+    },
+    // "explorer.confirmDelete": false,
+    "jupyter.askForKernelRestart": false,
+
+    "cSpell.enabled": true,                                                     // <-- {true}, false
+    "cSpell.enabledLanguageIds": [                                              // <--
+        "plaintext",
+        "markdown",
+        "tex",
+        "latex",
+        "bibtex",
+        "restructuredtext",
+        "yaml",
+        "json",
+        "jsonl",
+        "jsonc",
+        "toml",
+        "ini",
+        "html",
+        "xml",
+        "csv",
+        "tsv",
+        "excel",
+        "makefile",
+        "dockerfile",
+        "dockercompose",
+        "shellscript",
+        "powershell",
+        "bat",
+        "python",
+        "prolog",
+        "lean",
+        "lean4",
+        "properties",
+        "snippets",
+        "code-referencing",
+        "diff",
+        "git-commit",
+        "git-rebase",
+        "ignore",
+        "less",
+        "log",
+        "pip-requirements",
+        "raw",
+        "search-result",
+    ],
+    "cSpell.ignorePaths": [                                                     // <--
+    ],
+    "cSpell.language": "en",
+    "cSpell.ignoreWords": [
+    ],
+    "cSpell.words": [
+    ],
+    "cSpell.userWords": [  // only per user?
+    ],
+
+    "git.openRepositoryInParentFolders": "always",
+
+    "vim.smartRelativeLine": true,
+}
