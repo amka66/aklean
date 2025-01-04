@@ -1,20 +1,16 @@
-# TODO: File is WIP
-
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --no-builtin-variables
 
-.PHONY: pull sync clean test status recent push lock upgrade run rerun
+.PHONY: pull clean build_root lint test status recent push update build run brun rerun
 # .EXPORT_ALL_VARIABLES:
 # .DELETE_ON_ERROR:
 # .INTERMEDIATE:
 # .SECONDARY:
 .DEFAULT_GOAL := status
 
-ENABLE_TESTS ?= 1
+CACHED_MATHLIB ?= 1
 ENABLE_DVC ?= 0
 SYNC_DVC_CACHE ?= 0
-
-ARGS ?= aklean
 
 ifeq ($(SYNC_DVC_CACHE),1)
 RUN_CACHE = --run-cache
@@ -27,58 +23,67 @@ pull:
 	git fetch --all --tags
 	[[ -z  "$$(git branch --format "%(upstream:short)" --list "$$(git branch --show-current)")" ]] || git merge --ff-only
 ifeq ($(ENABLE_DVC),1)
-	uv run dvc fetch $(RUN_CACHE)
-	-uv run dvc checkout
+	dvc fetch $(RUN_CACHE)
+	-dvc checkout
 endif
-
-sync:
-	@echo "Syncing dependencies..."
-# FIXME: add
-# TODO: it should first create a virtual env if it doesn't exist
 
 clean:
 	@echo "Deleting temporary files..."
+	lake clean
 	find . -type f -name '.DS_Store' -delete || true
-	find . -type d -name '.ipynb_checkpoints' -delete || true
-# FIXME: add
 
-ifeq ($(ENABLE_TESTS),1)
+build_root:
+	@echo "Building root..."
+ifeq ($(CACHED_MATHLIB),1)
+	lake exe cache get
+endif
+	lake build
+
+lint:
+	@echo "Linting..."
+	lake check-lint || exit 0 && lake lint
+
 test:
 	@echo "Running tests..."
-# TODO: add
-endif
+	lake check-test || exit 0 && lake test
 
 status:
 	@echo "Reporting file status..."
 	du -sh .
 	git status
 ifeq ($(ENABLE_DVC),1)
-	uv run dvc status
-	uv run dvc data status --granular
-	uv run dvc diff
-	uv run dvc status --cloud
+	dvc status
+	dvc data status --granular
+	dvc diff
+	dvc status --cloud
 endif
 
-recent:	pull sync clean test status
-# TODO: it should first create a virtual env if it doesn't exist
+recent:	pull clean build_root lint test status
 
-push: test
+push: lint test
 	@echo "Pushing file changes..."
 ifeq ($(ENABLE_DVC),1)
-	uv run dvc push $(RUN_CACHE)
+	dvc push $(RUN_CACHE)
 endif
 	git push
 
-lock:
-	@echo "Locking dependencies..."
-# FIXME: add
+update:
+	@echo "Updating dependencies and manifest..."
+	lake update
+ifeq ($(CACHED_MATHLIB),1)
+	lake exe cache get
+endif
 
-upgrade:
-	@echo "Upgrading locked dependencies..."
-# FIXME: add
+build:
+	@echo "Building $(ARGS)..."
+	lake build $(ARGS)
 
 run:
-	@echo "Running main (args=$(ARGS))..."
-# TODO: add
+	@echo "Running $(ARGS)..."
+	lake env $(ARGS)
 
-rerun: recent run
+brun:
+	@echo "Building and running $(ARGS)..."
+	lake exe $(ARGS)
+
+rerun: recent brun
