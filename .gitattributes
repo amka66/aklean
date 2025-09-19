@@ -1,0 +1,8 @@
+# Detect text files via git's heuristic; normalize text files to LF at check in (unless file is already present);
+# no effect on checkout (git's core.autocrlf and core.eol configuration variables take effect).
+# * text=auto
+
+# Detect text files via git's heuristic; normalize text files to LF at check in (unless file is already present);
+# and enforce no-conversition on check out (effectively, LF; git's core.autocrlf and core.eol configuration 
+# variables have no effect).
+* text=auto eol=lf
